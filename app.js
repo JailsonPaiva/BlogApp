@@ -5,6 +5,8 @@
     const app = express()
     const path = require('path')
     const admin = require('./routes/admin')
+    const session = require('express-session')
+    const flash = require('connect-flash')
     const mongoose = require('mongoose')
 
 //Configurações
@@ -24,6 +26,20 @@
         }).catch( (err) => console.log(`Ocorreu um erro ${err}`))
     //Public
         app.use(express.static(path.join(__dirname, 'public')))
+    //sessoins
+        app.use(session({
+            secret: "cursodenode",  //sempre utilizar uma secret segura
+            resave: true,
+            saveUninittialzed: true
+        }))
+        app.use(flash())
+
+        //Middleware
+        app.use( function(req, res, next) {
+            res.locals.success_msg = req.flash("success_msg")
+            res.locals.error_msg = req.flash("error_msg")
+            next()
+        })
 
 
 // //Rotas

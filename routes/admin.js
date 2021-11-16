@@ -14,7 +14,12 @@ router.get('/posts', (req, res) => {
 })
 
 router.get("/categorias", (req, res) => {
-	res.render("admin/categorias")
+	Categoria.find().lean().sort({date: "desc"}).then((categorias) => {
+		res.render("admin/categorias", {categorias: categorias})
+	}).catch((err) => {
+		req.flash("erro_msg", "Ocorreu um erro ao listar as categorias.")
+		res.redirect("/admin")
+	})
 })
 
 router.get("/categorias/add", (req, res) => {
@@ -22,14 +27,39 @@ router.get("/categorias/add", (req, res) => {
 })
 
 router.post("/categorias/nova", (req, res) => {
-	
-	const novaCategoria = {
-		nome: req.body.nome,
-		slug: req.body.slug
+
+	var erros = []
+
+	if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
+		erros.push({texto: "Nome da categoria inválido"})
 	}
-	new Categoria(novaCategoria).save().then( () => {
-		console.log("Categoria cadastrada!")
-	}).catch( (err) => console.log(`Ocorreu um erro ${err}`))
+
+	if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
+		erros.push({texto: "Slug inválido"})
+	}
+
+	if(req.body.nome.length < 2) {
+		erros.push({texto: "Nome da categoria é muito pequeno"})
+	}
+
+	if(erros.length > 0) {
+		res.render("admin/addcategorias", {erros: erros})
+	}else {
+
+		const novaCategoria = {
+			nome: req.body.nome,
+			slug: req.body.slug
+		}
+		new Categoria(novaCategoria).save().then( () => {
+			req.flash("success_msg", "Categoria cadastrada com sucesso!")
+			res.redirect("/admin/categorias")
+		}).catch( (err) => {
+			req.flash("error_msg", "Ocoreu um erro ao cadastrar a categoria, tente novamente!")
+			res.redirect("/admin")
+		})
+
+	}
+	
 })
 
 // router.get('/categorias', (req, res) => {
