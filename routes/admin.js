@@ -3,6 +3,8 @@ const router = express.Router()
 const mongoose = require("mongoose")
 require("../models/Categoria")
 const Categoria = mongoose.model("Categoria")
+require("../models/Postagem")
+const Postagem = mongoose.model("Postagem")
 
 router.get('/', (req, res) => {
 	// res.send('Pagina principal do painel ADM')
@@ -102,7 +104,51 @@ router.post("/categoria/deletar", (req,res) =>{
 	})
 })
 
-// router.get('/categorias', (req, res) => {
-// 	res.send('Página de categorias')
-// })
+router.get("/postagens", (req, res) => {
+	Postagem.find().lean().populate('categoria').then((postagens) => {
+		res.render("admin/postagens", {postagens: postagens})
+	}).catch((err) => {
+		req.flash("error_msg", "Ocorreu um erro ao listar as postagens")
+		res.redirect("/admin")
+	})
+})
+
+router.get("/postagens/add",(req, res) => {
+	Categoria.find().then((categorias) => {
+		res.render("admin/addpostagem", {categorias: categorias})
+	}).catch((err) => {
+		req.flash("erro_msg", "Ocorreu um erro ao carregar o formuláro.")
+		res.redirect("/admin")
+	})
+	
+})
+
+router.post("/postagens/nova", (req, res) => {
+	const erros = []
+
+	if(req.body.categoria == "0"){
+		erros.push({texto: "Categoria inválida, registre uma nova categoria."})
+	}
+
+	if(erros.length > 0){
+		res.render("admin/addpostagem", {erros: erros})
+	} else{
+		const novaPostagem = {
+			titulo: req.body.titulo,
+			slug: req.body.slug,
+			descricao: req.body.descricao,
+			conteudo: req.body.conteudo,
+			categoria: req.body.categoria
+		}
+
+		new Postagem(novaPostagem).save().then(() => {
+			req.flash("success_msg", "Postagem criada com sucesso!")
+			res.redirect("/admin/postagens")
+		}).catch((err) => {
+			req.flash("error_msg","Ocorreu um erro ao salvar a postagem.")
+			res.redirect("/admin/postagens")
+		})
+	}
+})
+
 module.exports = router
