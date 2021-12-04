@@ -6,12 +6,16 @@
 
 
 {{#each postagens}}
-	<div class="card mt-4">
+	<div class="card mt-4 mb-2">
 		<div class="card-body">
 			<h4>Título: {{titulo}}</h4>
 			<p>Descrição: {{descricao}}</p>
 			<small>Data: {{data}}</small>
 			<small>Categoria: {{categoria.nome}}</small>
+			<br>
+			<a href="/admin/postagens/edit/{{_id}}">
+				<button class="btn btn-success mt-3">Editar postagem</button>
+			</a>
 		</div>
 	</div>
 {{else}}
