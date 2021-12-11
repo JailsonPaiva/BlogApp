@@ -15,6 +15,8 @@
     const usuarios = require('./routes/usuario')
     const passport = require("passport")
     require("./config/auth")(passport)
+    const db = require("./config/db")
+    
 
 
 //Configurações
@@ -29,7 +31,7 @@
         app.set('view engine', 'handlebars')
     //Mongoose
         mongoose.Promise = global.Promise
-        mongoose.connect("mongodb://localhost/blogapp").then( () => {
+        mongoose.connect(db.mongoURI).then( () => {
             console.log('Conectado com o Mongo!')
         }).catch( (err) => console.log(`Ocorreu um erro ${err}`))
     //Public
@@ -49,6 +51,7 @@
             res.locals.success_msg = req.flash("success_msg")
             res.locals.error_msg = req.flash("error_msg")
             res.locals.error = req.flash("error")
+            res.locals.user = req.user || null
             next()
         })
 
@@ -118,7 +121,7 @@
     app.use('/usuario', usuarios)
 
 //Outros
-    const PORT = 8081
+    const PORT =  process.env.PORT || 8081
     app.listen(PORT, () => {
         console.log('Servidor rodando!!!')
     })

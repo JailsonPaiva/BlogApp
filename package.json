@@ -1,0 +1,36 @@
+{
+  "name": "blogapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.4",
+    "express-session": "^1.17.2",
+    "mongoose": "^6.0.12",
+    "nodemon": "^2.0.15",
+    "passport-local": "^1.0.0",
+    "passport": "^0.5.0",
+    "update": "^0.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JailsonPaiva/BlogApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JailsonPaiva/BlogApp/issues"
+  },
+  "homepage": "https://github.com/JailsonPaiva/BlogApp#readme"
+}

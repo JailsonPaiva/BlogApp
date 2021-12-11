@@ -78,6 +78,12 @@ router.post("/registro", (req, res) => {
 	}
 })
 
+router.get("/logout", (req, res) => {
+	req.logOut()
+	req.flash("success_msg", "Deslogado com sucesso!")
+	res.redirect("/")
+})
+
 router.post("/login", (req, res, next) => {
 	passport.authenticate("local", {
 		successRedirect: "/",
